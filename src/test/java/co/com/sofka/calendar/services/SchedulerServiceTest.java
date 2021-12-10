@@ -5,7 +5,7 @@ import co.com.sofka.calendar.collections.Program;
 import co.com.sofka.calendar.collections.Time;
 import co.com.sofka.calendar.model.ProgramDate;
 import co.com.sofka.calendar.repositories.ProgramRepository;
-import com.google.gson.Gson;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +42,11 @@ class SchedulerServiceTest {
         Mockito.when(repository.findById(programId)).thenReturn(Mono.just(program));
         //TODO: hacer una subscripción de el servicio reactivo
         Flux<ProgramDate> response = schedulerService.generateCalendar(programId, startDate);
+        Mockito.verify(repository).findById(programId);
+
+        StepVerifier.create(response)
+                .expectNextCount(6)
+                .expectComplete();
 
         StepVerifier.create(response)
                 .expectNextMatches(programDate -> {
@@ -73,7 +78,7 @@ class SchedulerServiceTest {
 
         //Assertions.assertEquals(13, response.size());//TODO: hacer de otro modo
         //Assertions.assertEquals(getSnapResult(), new Gson().toJson(response));//TODO: hacer de otro modo
-        Mockito.verify(repository).findById(programId);
+
     }
 
     @Test
@@ -83,12 +88,12 @@ class SchedulerServiceTest {
 
         Mockito.when(repository.findById(programId)).thenReturn(Mono.empty());
 
-        //TODO: hacer de otro modo
-        var exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            schedulerService.generateCalendar(programId, startDate);//TODO: hacer una subscripción de el servicio reactivo
+        Flux<ProgramDate> response = schedulerService.generateCalendar(programId, startDate);
 
-        });
-        Assertions.assertEquals("El programa academnico no existe", exception.getMessage());//TODO: hacer de otro modo
+        StepVerifier.create(response)
+                .expectErrorMessage("Objeto vacio")
+                .verify();
+
         Mockito.verify(repository).findById(programId);
 
     }
