@@ -2,6 +2,7 @@ package co.com.sofka.calendar.services;
 
 import co.com.sofka.calendar.collections.Program;
 import co.com.sofka.calendar.model.ProgramDate;
+import co.com.sofka.calendar.repositories.ProgramDateRepository;
 import co.com.sofka.calendar.repositories.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class SchedulerService {
     private ProgramRepository programRepository;
 
 
+
     public Flux<ProgramDate> generateCalendar(String programId, LocalDate startDate) {
         var endDate = new AtomicReference<>(LocalDate.from(startDate));
         final AtomicInteger[] pivot = {new AtomicInteger()};
@@ -30,7 +32,6 @@ public class SchedulerService {
 
         //TODO: debe pasarlo a reactivo, no puede trabaja elementos bloqueantes
         //TODO: trabajar el map reactivo y no deben colectar
-        // var program = programRepository.findById(programId).block();
 
         var program = programRepository.findById(programId);
 
