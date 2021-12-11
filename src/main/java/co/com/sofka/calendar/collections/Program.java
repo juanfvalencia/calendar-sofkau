@@ -3,6 +3,7 @@ package co.com.sofka.calendar.collections;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
 import java.util.List;
 
 @Document(collection = "programas")
@@ -16,8 +17,7 @@ public class Program {
 
     }
 
-    public Program(String id, String name, List<CourseTime> courses) {
-        this.id = id;
+    public Program( String name, List<CourseTime> courses) {
         this.name = name;
         this.courses = courses;
     }
